@@ -12,10 +12,11 @@ on:
 jobs:
 
   test:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         go_version: ['1.18', '1.19','>=1.20']
+        ubuntu_version: ['ubuntu-20.04', '>=ubuntu-22.04']
+    runs-on: ${{ matrix.ubuntu_version }}
     steps:
     - uses: actions/checkout@v4
 
