@@ -1,3 +1,6 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
 name: Go
 
 on:
@@ -7,16 +10,12 @@ on:
     branches: [ "main" ]
 
 jobs:
+
   test:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        go_version: ['1.18', '1.19', '1.20']
-    runs-on: ubuntu-latest  # 🟢 Garante suporte a Docker
-
-    services:
-      docker:
-        image: docker:dind  # 🔥 Ativa o Docker no runner
-
+        go_version: ['1.18', '1.19','>=1.20']
     steps:
     - uses: actions/checkout@v4
 
@@ -24,7 +23,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: ${{ matrix.go_version }}
-
+        
     - name: Install Docker Compose
       run: sudo apt-get update && sudo apt-get install -y docker-compose
 
@@ -39,19 +38,9 @@ jobs:
 
   build:
     needs: test
-    runs-on: ubuntu-latest  # 🟢 Usa a versão mais recente do Ubuntu
-
-    services:
-      docker:
-        image: docker:dind  # 🔥 Ativa o Docker
-
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.20'
 
     - name: Build
       run: go build -v main.go
